@@ -31,7 +31,7 @@ DEFAULT_CONFIG = {
         "dj": {"x": 9.5, "y": 10.75, "z": 10.5}
     },
     "language": "fa",
-    "welcome_message": "خوش اومدی {username} سلام ! برای دستورات !help بزنید.",
+    "welcome_message": " <#FFD700> سلام {username} خوش اومدید ❤️ ",
     "announcement_interval": 300,
     "announcement_message": "برای دیدن دستورات ربات، !help بزنید!"
 }
