@@ -1990,7 +1990,7 @@ class AdvancedBot(BaseBot):
             logger.error(f"خطا در cmd_down: {e}")
 
     async def cmd_changeroom(self, user: User, args: list):
-        """دستور فوق امنیتی و اختصاصی فقط برای ad0ri جهت تغییر روم و ری‌استارت ربات"""
+        """دستور فوق امنیتی و اختصاصی فقط برای ad0ri جهت تغییر روم و ری‌استارت ربات با ذخیره دایمی"""
         import os
         import sys
         import asyncio
@@ -2007,19 +2007,30 @@ class AdvancedBot(BaseBot):
 
         new_room_id = args[0].strip()
         
-        # فرستادن پیام تایید در چت روم قبل از رفتن
-        await self.highrise.chat(f"🚀 دستور انتقال به روم جدید توسط ad0ri تایید شد. در حال انتقال ربات...")
+        await self.highrise.chat(f"🚀 دستور انتقال به روم جدید توسط ad0ri تایید شد. در حال ذخیره‌سازی و ری‌استارت...")
         logger.info(f"مالک ربات (ad0ri) دستور انتقال به روم {new_room_id} را صادر کرد.")
         
-        # قرار دادن آیدی جدید در حافظه زنده محیطی
+        # 📝 ذخیره آیدی روم جدید در یک فایل متنی تا با ری‌استارت شدن پاک نشود
+        try:
+            with open("current_room.txt", "w") as f:
+                f.write(new_room_id)
+        except Exception as e:
+            logger.error(f"خطا در ذخیره فایل روم: {e}")
+        
+        # قرار دادن در متغیر محیطی فعلی
         os.environ["ROOM_ID"] = new_room_id
         
-        # قطع ارتباط ایمن و بستن کارهای پس‌زمینه برای جلوگیری از باگ روح
-        await asyncio.sleep(2)
+        # بستن رسمی کانکشن هایرایز برای جلوگیری از باگ روح
+        try:
+            if hasattr(self, 'highrise') and self.highrise:
+                await self.highrise.close()
+        except Exception:
+            pass
+            
+        await asyncio.sleep(3)
         
-        # ری‌استارت زنده و آنی پایتون بدون کرش کردن رندر
+        # ری‌استارت زنده و آنی پایتون
         os.execv(sys.executable, ['python'] + sys.argv)
-
     
     async def cmd_ban(self, user: User, message: str):
         if user.username.lower() not in self.config["admin_usernames"]:
@@ -2468,7 +2479,15 @@ async def main():
     logger.info("تلاش برای بارگذاری متغیرهای محیطی...")
     room_id = os.getenv("ROOM_ID", "68e771922d585712212e8070")
     api_token = os.getenv("API_TOKEN", "9a089b7f9bb1f38a943a6add2af7e1823a709e51119a7f9c7f870b443bb8c4cc")
-    
+
+        # چک کردن اینکه آیا آیدی روم جدیدی ذخیره شده است یا خیر
+    if os.path.exists("current_room.txt"):
+        with open("current_room.txt", "r") as f:
+            saved_room = f.read().strip()
+    if saved_room:
+    room_id = saved_room
+    logger.info(f"🤖 ربات آیدی روم ذخیره شده را بارگذاری کرد: {room_id}")
+                
     if not room_id or not api_token:
         logger.error("ROOM_ID یا API_TOKEN تنظیم نشده‌اند.")
         return
