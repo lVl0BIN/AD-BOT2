@@ -2440,9 +2440,9 @@ def main():
 
     logger.info(f"🚀 در حال راه‌اندازی ربات برای روم: {room_id}")
     
-    # 🚀 اجرای مستقیم و بدون واسطه ربات (سازگار با تمامی نسخه‌های SDK)
+    # 🚀 اجرای دقیق و استاندارد ربات (مطابق با تعداد آرگومان‌های درخواستی پایتون)
     bot_instance = AdvancedBot()
-    bot_instance.run(bot_instance, room_id, api_token)
+    bot_instance.run(room_id, api_token)
 
 if __name__ == "__main__":
     main()
