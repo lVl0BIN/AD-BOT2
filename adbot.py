@@ -2324,9 +2324,9 @@ class AdvancedBot(BaseBot):
             await self.highrise.chat("شماره danc معتبر نیست!")
             return
         emote = available_emotes[dance_input]
-        duration = self.emote_durations.get(emote, 7.5) # خط ۲۳۲۷ اینجاست!
-        
-        room_users = await self.highrise.get_room_users()
+                duration = self.emote_durations.get(emote, 7.5)
+            
+            room_users = await self.highrise.get_room_users()
             
         # حل مشکل پیدا کردن دنس‌ها بدون ارور دادن
             try:
