@@ -2440,12 +2440,9 @@ def main():
 
     logger.info(f"🚀 در حال راه‌اندازی ربات برای روم: {room_id}")
     
-    # 🌟 اجرای استاندارد ربات بر اساس آپدیت جدید SDK هایرایز
-    from highrise_bot_sdk import BotApp
-    
+    # 🚀 اجرای مستقیم و بدون واسطه ربات (سازگار با تمامی نسخه‌های SDK)
     bot_instance = AdvancedBot()
-    app = BotApp(api_token, room_id, bot_instance)
-    app.run()
+    bot_instance.run(bot_instance, room_id, api_token)
 
 if __name__ == "__main__":
     main()
