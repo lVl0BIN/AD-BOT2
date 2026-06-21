@@ -1199,9 +1199,14 @@ class AdvancedBot(BaseBot):
         username = user.username.lower()
         msg = message.strip()
         msg_lower = msg.lower()
-        self.user_scores[username] = self.user_scores.get(username, 0) + 2
-
+        
+        # بررسی اینکه آیا پیام خصوصیه یا عمومی
+        # در Highrise، پیام‌های خصوصی معمولاً از طریق یک channel خاص میرن
+        # ولی ما می‌تونیم با بررسی pattern شناختشون
+        
         try:
+            self.user_scores[username] = self.user_scores.get(username, 0) + 2
+
             if msg_lower in self.emotes:
                 await self.start_dance(user, self.emotes[msg_lower])
             elif msg_lower == "stop":
@@ -1216,27 +1221,6 @@ class AdvancedBot(BaseBot):
                     await self.highrise.chat(self.get_message("invalid_command"))
         except Exception as e:
             logger.error(f"خطا در on_chat از {username}: {e}")
-
-    async def on_whisper(self, user: User, message: str):
-        try:
-            reply = (
-                "👋 سلام! من یه ربات هوشمند هستم.\n\n"
-                "✨ ویژگی‌های من:\n"
-                "🕺 سیستم دنس (۲۲۱ دنس)\n"
-                "🎉 پارتی برای همه کاربران\n"
-                "📍 سیستم تلپورت\n"
-                "❤️ ارسال ری‌اکشن\n"
-                "🔒 بن و آنبن کاربران\n"
-                "❄️ فریز کاربران\n"
-                "💰 سیستم تیپ\n"
-                "👑 مدیریت ادمین\n"
-                "🔄 تغییر روم\n\n"
-                "📩 برای اجاره بات به @ad0ri پیام بدید!"
-            )
-            await self.highrise.send_whisper(user.id, reply)
-            logger.info(f"پیام خصوصی از {user.username} دریافت و پاسخ داده شد.")
-        except Exception as e:
-            logger.error(f"خطا در پاسخ به پیام خصوصی {user.username}: {e}")
 
     async def on_tip(self, sender: User, receiver: User, tip):
         try:
@@ -2435,10 +2419,15 @@ class AdvancedBot(BaseBot):
             await self.highrise.chat("❌ فرمت صحیح: !changeroom room_id")
             return
         new_room_id = parts[1].strip()
+        await self.highrise.chat(f"✅ درخواست تغییر روم به {new_room_id[:10]}... ثبت شد. بات زمان کمی طول می‌کشه تا متصل شه.")
+        logger.info(f"تغییر روم درخواست شد به: {new_room_id} توسط {user.username}")
+        
+        # اپدیت environment variable
         os.environ["ROOM_ID"] = new_room_id
-        await self.highrise.chat(f"✅ روم تغییر کرد! بات الان میره روم جدید...")
-        logger.info(f"تغییر روم به: {new_room_id} توسط {user.username}")
-        raise Exception(f"تغییر روم به {new_room_id}")
+        
+        # ایجاد exception برای reconnect با room جدید
+        await asyncio.sleep(1)
+        raise Exception(f"Changing room to {new_room_id}")
 
 async def handle_ping(request):
     return aiohttp.web.Response(text="Bot is Alive!")
