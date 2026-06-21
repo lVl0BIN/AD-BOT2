@@ -1103,14 +1103,6 @@ class AdvancedBot(BaseBot):
         await self.sync_room_users()
         self.announcement_task = create_task(self.announcement_loop())
         self.score_update_task = create_task(self.score_update_loop())
-        async def dance_loop():
-            try:
-                while True:
-                    await self.highrise.send_emote("emote-ghost-idle", self.user_id)
-                    await sleep(9.0)
-            except CancelledError:
-                logger.info("وظیفه رقص ربات لغو شد.")
-        self.dance_tasks[self.user_id] = create_task(dance_loop())
 
     async def on_user_join(self, user: User, position: Position):
         username = user.username.lower()
