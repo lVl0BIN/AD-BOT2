@@ -308,7 +308,7 @@ class AdvancedBot(BaseBot):
             "220": "emote-salute",
             "221": "idle-floorsleeping2",
             "222": "dance-floss",
-            "223": "emote-hanging",
+            "223": "emote-rest",
             "۱": "idle_zombie",
             "۲": "idle_layingdown2",
             "۳": "idle_layingdown",
@@ -531,7 +531,7 @@ class AdvancedBot(BaseBot):
             "۲۲۰": "emote-salute",
             "۲۲۱": "idle-floorsleeping2",
             "۲۲۲": "dance-floss",
-            "۲۲۳": "emote-hanging",
+            "۲۲۳": "emote-rest",
             "zombie": "idle_zombie",
             "relaxed": "idle_layingdown2",
             "attentive": "idle_layingdown",
@@ -754,7 +754,7 @@ class AdvancedBot(BaseBot):
             "relaxing": "idle-floorsleeping2",
             "attention": "emote-salute",
             "floss": "dance-floss",
-            "hanging": "emote-hanging"
+            "rest": "emote-rest"
             
         }
 
@@ -980,7 +980,7 @@ class AdvancedBot(BaseBot):
             "emote-cutesalute": 15.0,
             "emote-salute": 15.0,
             "dance-floss": 11.0,
-            "emote-hanging": 6.0
+            "emote-rest": 8.5
         }
 
     def load_config(self):
@@ -1232,6 +1232,34 @@ class AdvancedBot(BaseBot):
                     await self.highrise.chat(self.get_message("invalid_command"))
         except Exception as e:
             logger.error(f"خطا در on_chat از {username}: {e}")
+
+    async def on_whisper(self, user: User, message: str) -> None:
+        logger.info(f"📩 پیام خصوصی جدید از [{user.username}]: {message}")
+        
+        # ⛔ جلوگیری از پاسخ به پیام‌های خودِ ربات برای دفع باگ لوپ بی‌نهایت
+        if user.id == self.user_id:
+            return
+
+        # 👑 متن تبلیغاتی و معرفی ویژگی‌های ربات به همراه اطلاعات رنت
+        auto_reply = (
+            f"سلام @{user.username} عزیز! ❤️\n\n"
+            "🤖 من یک ربات پیشرفته و فول امکانات برای مدیریت و ارتقای روم هستم!\n\n"
+            "✨ **بخشی از قابلیت‌های خفن من:**\n"
+            "🔹 دارای ۲۲۳ دنس جذاب و فعال با تکرار همیشگی و بدون حتی ۱ ثانیه تاخیر! 💃\n"
+            "🔹 سیستم خوش‌آمدگویی هوشمند و خودکار به محض ورود پلیرها 🚪\n"
+            "🔹 قابلیت رقص همگانی و پارتی خودکار برای کل اعضای روم 🕺\n"
+            "🔹 امنیت بالا و مدیریت کامل ادمین‌ها و دستورات اختصاصی 🛠️\n"
+            "🔹 میزبانی ۲۴ ساعته و آنلاین بدون قطعی روی سرورهای قدرتمند ⚡\n\n"
+            "🤝 **شرایط رنت (اجاره):**\n"
+            "برای اجاره یا همان رنت این ربات فوق‌العاده برای روم خود، لطفاً همین الان به آیدی زیر پیام بدید:\n"
+            "👉 **@ad0ri** 👈"
+        )
+        
+        try:
+            # ارسال دایرکت پیام به پی-وی کاربر
+            await self.highrise.send_whisper(user.id, auto_reply)
+        except Exception as e:
+            logger.error(f"خطا در ارسال پاسخ خودکار پی-وی: {e}")
 
     async def on_tip(self, sender: User, receiver: User, tip):
         try:
