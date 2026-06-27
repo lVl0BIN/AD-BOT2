@@ -32,7 +32,7 @@ DEFAULT_CONFIG = {
         "dj": {"x": 9.5, "y": 10.75, "z": 10.5}
     },
     "language": "fa",
-    "welcome_message": "✨ 🌟 𝐖𝐞𝐥𝐜𝐨𝐦𝐞 {username} ❤️ 𝐆𝐥𝐚𝐝 𝐭𝐨 𝐡𝐚𝐯𝐞 𝐲𝐨𝐮 𝐡𝐞𝐫𝐞!\n🕺 𝐔𝐬𝐞 𝐍𝐮𝐦𝐛𝐞𝐫𝐬 (𝟏-𝟐𝟐𝟓) 𝐨𝐫 𝐄𝐦𝐨𝐭𝐞 𝐍𝐚𝐦𝐞𝐬 𝐭𝐨 𝐝𝐚𝐧𝐜𝐞!\n👑 𝐓𝐡𝐢𝐬 𝐛𝐨𝐭 𝐰𝐚𝐬 𝐜𝐫𝐞𝐚𝐭𝐞𝐝 & 𝐝𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐝 𝐛𝐲 @𝐚𝐝𝟎𝐫𝐢 😉\n📺 𝐒𝐮𝐛𝐬𝐜𝐫𝐢𝐛𝐞 𝐭𝐨 𝐨𝐮𝐫 𝐘𝐨𝐮𝐓𝐮𝐛𝐞: @𝐚𝐝𝐨𝐫𝐢_𝐡𝐢𝐭𝐨𝐭𝐬𝐨 🚀",
+    "welcome_message": "✨ 🌟 𝐖𝐞𝐥𝐜𝐨𝐦𝐞 {username} ❤️ 𝐆𝐥𝐚𝐝 𝐭𝐨 𝐡𝐚𝐯𝐞 𝐲𝐨𝐮 𝐡𝐞𝐫𝐞!\n🕺 𝐔𝐬𝐞 𝐍𝐮𝐦𝐛𝐞𝐫𝐬 (𝟏-𝟐𝟑𝟎) 𝐨𝐫 𝐄𝐦𝐨𝐭𝐞 𝐍𝐚𝐦𝐞𝐬 𝐭𝐨 𝐝𝐚𝐧𝐜𝐞!\n👑 𝐓𝐡𝐢𝐬 𝐛𝐨𝐭 𝐰𝐚𝐬 𝐜𝐫𝐞𝐚𝐭𝐞𝐝 & 𝐝𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐝 𝐛𝐲 @𝐚𝐝𝟎𝐫𝐢 😉\n📺 𝐒𝐮𝐛𝐬𝐜𝐫𝐢𝐛𝐞 𝐭𝐨 𝐨𝐮𝐫 𝐘𝐨𝐮𝐓𝐮𝐛𝐞: @𝐚𝐝𝐨𝐫𝐢_𝐡𝐢𝐭𝐨𝐭𝐬𝐨 🚀",
     "announcement_interval": 300,
     "announcement_message": "برای دیدن دستورات ربات، !help بزنید!"
 }
@@ -311,6 +311,11 @@ class AdvancedBot(BaseBot):
             "223": "dance-tiktok11",
             "224": "dance-tiktok12",
             "225": "dance-tiktok13",
+            "226": "emote-spiderman",
+            "227": "dance-breakdance",
+            "228": "dance-twerk",
+            "229": "idle-space",
+            "230": "sit-idle-cute",
             "۱": "idle_zombie",
             "۲": "idle_layingdown2",
             "۳": "idle_layingdown",
@@ -536,6 +541,11 @@ class AdvancedBot(BaseBot):
             "۲۲۳": "dance-tiktok11",
             "۲۲۴": "dance-tiktok12",
             "۲۲۵": "dance-tiktok13",
+            "۲۲۶": "emote-spiderman",
+            "۲۲۷": "dance-breakdance",
+            "۲۲۸": "dance-twerk",
+            "۲۲۹": "idle-space",
+            "۲۳۰": "sit-idle-cute",
             "zombie": "idle_zombie",
             "relaxed": "idle_layingdown2",
             "attentive": "idle_layingdown",
@@ -1120,19 +1130,6 @@ class AdvancedBot(BaseBot):
         self.announcement_task = create_task(self.announcement_loop())
         self.score_update_task = create_task(self.score_update_loop())
 
-    async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
-        """وقتی هر بازیکن دنس اجرا کنه، ID دنس رو به ادمین ویسپر کن"""
-        try:
-            admins_lower = [admin.lower() for admin in self.config.get("admin_usernames", [])]
-            # فقط دنس‌های بازیکنان عادی رو گزارش بده (نه دنس‌های خود ربات)
-            if user.username.lower() not in admins_lower and user.id != self.user_id:
-                for admin_username in self.config.get("admin_usernames", []):
-                    admin_user = self.active_users.get(admin_username.lower())
-                    if admin_user:
-                        await self.highrise.send_whisper(admin_user.id, f"🎵 @{user.username}: {emote_id}")
-        except Exception as e:
-            logger.error(f"خطا در on_emote: {e}")
-
     async def on_user_join(self, user: User, position: Position):
         username = user.username.lower()
         if username in self.config["banned_users"]:
@@ -1262,7 +1259,7 @@ class AdvancedBot(BaseBot):
             "سلام عزیز! ❤️\n\n"
             "🤖 من یک ربات پیشرفته و فول امکانات برای مدیریت و ارتقای روم هستم!\n\n"
             "✨ **بخشی از قابلیت‌های خفن من:**\n"
-            "🔹 دارای ۲۲۵ دنس جذاب و فعال با تکرار همیشگی و بدون حتی ۱ ثانیه تاخیر! 💃\n"
+            "🔹 دارای ۲۳۰ دنس جذاب و فعال با تکرار همیشگی و بدون حتی ۱ ثانیه تاخیر! 💃\n"
             "🔹 سیستم خوش‌آمدگویی هوشمند و خودکار به محض ورود پلیرها 🚪\n"
             "🔹 قابلیت رقص همگانی و پارتی خودکار برای کل اعضای روم 🕺\n"
             "🔹 امنیت بالا و مدیریت کامل ادمین‌ها و دستورات اختصاصی 🛠️\n"
