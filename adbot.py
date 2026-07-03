@@ -1028,6 +1028,8 @@ class AdvancedBot(BaseBot):
             "dance-employee": 15.0,
             "emote-kissing": 15.0,
             "dance-tiktok11": 15.0,
+            "dance-tiktok12": 15.0,
+            "dance-tiktok13": 15.0,
             "emote-cutesalute": 15.0,
             "emote-salute": 15.0,
             "dance-floss": 11.0,
@@ -1331,7 +1333,7 @@ class AdvancedBot(BaseBot):
         username = user.username.lower()
         await self.stop_dance(user)
         self.user_dances[username] = emote
-        duration = self.emote_durations.get(emote, 7.5)
+        duration = self.emote_durations.get(emote, 15.0)
         # ⚡ ترفند طلایی: duration - 3.2 برای تکرار صفر تاخیر
         if duration > 4.5:
             sleep_time = duration - 3.2
@@ -2140,7 +2142,7 @@ class AdvancedBot(BaseBot):
         dance_list = ["dance-tiktok8", "dance-blackpink", "dance-tiktok2"]
         for emote in dance_list:
             await self.highrise.send_emote(emote, user.id)
-            await sleep(self.emote_durations.get(emote, 7.5))
+            await sleep(self.emote_durations.get(emote, 15.0))
         await self.highrise.chat(self.get_message("dancechain_success", username=user.username))
         logger.info(f"زنجیره رقص برای {user.username} اجرا شد.")
 
@@ -2419,7 +2421,7 @@ class AdvancedBot(BaseBot):
             return
 
         emote = self.emotes[dance_number]
-        duration = self.emote_durations.get(emote, 7.5)
+        duration = self.emote_durations.get(emote, 15.0)
 
         if parts[1] == "all":
             try:
@@ -2576,7 +2578,7 @@ class AdvancedBot(BaseBot):
         logger.info(f"دنس مداوم ربات به {actual_emote_name} توسط {user.username} تغییر کرد.")
 
         # دریافت زمان واقعی دنس از دیتابیس ربات
-        duration = self.emote_durations.get(actual_emote_name, 5.0)
+        duration = self.emote_durations.get(actual_emote_name, 15.0)
         
         # ⚡ ترفند طلایی: duration - 3.2 برای تکرار صفر تاخیر
         if duration > 4.5:
