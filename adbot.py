@@ -1329,11 +1329,11 @@ class AdvancedBot(BaseBot):
         await self.stop_dance(user)
         self.user_dances[username] = emote
         duration = self.emote_durations.get(emote, 15.0)
-        # ⚡ ترفند طلایی: duration - 3.2 برای تکرار صفر تاخیر
-        if duration > 4.5:
-            sleep_time = duration - 3.2
+        # ⚡ اصلاح ترفند تاخیر: کم کردن فقط 0.3 ثانیه برای جبران تاخیر شبکه و اجرای کامل دنس
+        if duration > 1.0:
+            sleep_time = duration - 0.3
         else:
-            sleep_time = max(1.0, duration - 1.5)
+            sleep_time = duration
 
         async def dance_loop():
             try:
@@ -2577,11 +2577,11 @@ class AdvancedBot(BaseBot):
         # دریافت زمان واقعی دنس از دیتابیس ربات
         duration = self.emote_durations.get(actual_emote_name, 15.0)
         
-        # ⚡ ترفند طلایی: duration - 3.2 برای تکرار صفر تاخیر
-        if duration > 4.5:
-            sleep_time = duration - 3.2
+        # ⚡ اصلاح ترفند تاخیر: کم کردن فقط 0.3 ثانیه برای جبران تاخیر شبکه و اجرای کامل دنس
+        if duration > 1.0:
+            sleep_time = duration - 0.3
         else:
-            sleep_time = max(1.0, duration - 1.5)
+            sleep_time = duration
 
         # شروع حلقه دنس بدون وقفه و روان
         async def new_emote_loop():
